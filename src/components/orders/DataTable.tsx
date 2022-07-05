@@ -53,12 +53,14 @@ const createData = (
     orderTime: string,
     quantity: number | string,
     userNumber: string,
+    position: number,
     product: {
         _id: string;
         name: string;
         dis: string;
         price: number | string;
         image: string;
+        position: number;
     }
 ) => ({
     id,
@@ -72,6 +74,7 @@ const createData = (
     quantity,
     userNumber,
     product,
+    position,
 });
 
 const useStyles = makeStyles((theme) => ({
@@ -97,6 +100,7 @@ const DataTable: React.FC<Props> = ({ apiData, products, forceUpdate }): React.R
     const [isLoading, setIsLoading] = useState(false);
     const [isSumbit, setIsSubmit] = useState(false);
 
+    const [position, setPosition] = useState(0);
     const [name, setName] = useState('');
     const [givenNumber, setGivenNumber] = useState('');
     const [address, setAddress] = useState('');
@@ -124,6 +128,7 @@ const DataTable: React.FC<Props> = ({ apiData, products, forceUpdate }): React.R
         setOrderStatus('');
         setUpdatedProduct(null);
         setIsSubmit(false);
+        setPosition(0);
     };
 
     const handleEdit = async (id: string) => {
@@ -138,7 +143,8 @@ const DataTable: React.FC<Props> = ({ apiData, products, forceUpdate }): React.R
             !paymentMethod ||
             !paymentStatus ||
             !orderStatus ||
-            !updatedProduct
+            !updatedProduct ||
+            !position
         )
             return;
 
@@ -148,6 +154,7 @@ const DataTable: React.FC<Props> = ({ apiData, products, forceUpdate }): React.R
 
         const updateData = {
             name,
+            position,
             givenNumber,
             address,
             qty,
@@ -179,6 +186,7 @@ const DataTable: React.FC<Props> = ({ apiData, products, forceUpdate }): React.R
             clearAll();
 
             // eslint-disable-next-line no-alert
+            // @ts-ignore
             alert(err?.response?.data?.message ?? 'Something went wrong');
         }
     };
@@ -194,12 +202,14 @@ const DataTable: React.FC<Props> = ({ apiData, products, forceUpdate }): React.R
             paymentStatus: string;
             orderStatus: string;
             product: ProductsData;
+            position: number;
         },
         idx: number
     ) => {
         setIsEditing(true);
         setEditingIdx(idx);
 
+        setPosition(editedData.position);
         setName(editedData.name);
         setGivenNumber(editedData.givenNumber);
         setAddress(editedData.address);
@@ -224,6 +234,7 @@ const DataTable: React.FC<Props> = ({ apiData, products, forceUpdate }): React.R
             data.orderTime,
             data.qty,
             data.userNumber,
+            data.position,
             data.product
         )
     );
@@ -238,6 +249,7 @@ const DataTable: React.FC<Props> = ({ apiData, products, forceUpdate }): React.R
                 <Table className={classes.table} aria-label="customized table">
                     <TableHead>
                         <TableRow>
+                            <StyledTableCell>Position</StyledTableCell>
                             <StyledTableCell>Product</StyledTableCell>
                             <StyledTableCell align="right">Name</StyledTableCell>
                             <StyledTableCell align="right">Given Number</StyledTableCell>
@@ -257,6 +269,21 @@ const DataTable: React.FC<Props> = ({ apiData, products, forceUpdate }): React.R
                         {rows.map((row, idx) => (
                             <StyledTableRow key={row.id}>
                                 {/* <StyledTableCell component="th" scope="row"> */}
+                                <StyledTableCell>
+                                    {isEditing && editingIdx === idx ? (
+                                        <FormControl className="">
+                                            <input
+                                                color="primary"
+                                                type="number"
+                                                onChange={(e) =>
+                                                    setPosition(Number(e.target.value))
+                                                }
+                                            />
+                                        </FormControl>
+                                    ) : (
+                                        row.position
+                                    )}
+                                </StyledTableCell>
                                 <StyledTableCell>
                                     <OrderedProduct
                                         product={row.product}
@@ -458,6 +485,7 @@ const DataTable: React.FC<Props> = ({ apiData, products, forceUpdate }): React.R
                                             onClick={() =>
                                                 editButtonHandler(
                                                     {
+                                                        position: row.position,
                                                         name: row.name,
                                                         givenNumber: row.givenNumber,
                                                         address: row.address,

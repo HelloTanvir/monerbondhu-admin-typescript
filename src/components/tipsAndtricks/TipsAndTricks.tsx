@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import AppLayout from '../../container/appLayout/AppLayout';
 import axios from '../../utils/axios';
 import Loader from '../../utils/Loader';
@@ -13,6 +13,7 @@ export interface TipsAndTricksData {
     content: string;
     videoLink: string;
     image: string;
+    position: number;
 }
 
 const TipsAndTricks = () => {
@@ -41,6 +42,7 @@ const TipsAndTricks = () => {
             } catch (err) {
                 setIsLoading(false);
                 // eslint-disable-next-line no-alert
+                // @ts-ignore
                 alert(err?.response?.data?.message ?? 'Something went wrong');
             }
         };

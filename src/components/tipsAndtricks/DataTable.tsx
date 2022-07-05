@@ -1,5 +1,5 @@
 /* eslint-disable no-alert */
-import { TextField } from '@material-ui/core';
+import { FormControl, TextField } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
@@ -55,7 +55,8 @@ const createData = (
     isVideo: boolean,
     videoLink: string,
     image: string,
-    viewCount: number | string
+    viewCount: number | string,
+    position: number
 ) => ({
     id,
     title,
@@ -65,6 +66,7 @@ const createData = (
     videoLink,
     image,
     viewCount,
+    position,
 });
 
 const useStyles = makeStyles({
@@ -109,7 +111,7 @@ const DataTable: React.FC<Props> = ({ apiData, forceUpdate }): React.ReactElemen
     const [isLoading, setIsLoading] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editingIdx, setEditingIdx] = useState(-1);
-
+    const [position, setPosition] = useState(0);
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [image, setImage] = useState<File | null>(null);
@@ -123,6 +125,7 @@ const DataTable: React.FC<Props> = ({ apiData, forceUpdate }): React.ReactElemen
         setTitle('');
         setContent('');
         setImage(null);
+        setPosition(0);
     };
 
     const handleDelete = async (id: string) => {
@@ -151,6 +154,7 @@ const DataTable: React.FC<Props> = ({ apiData, forceUpdate }): React.ReactElemen
         } catch (err) {
             setIsLoading(false);
             // eslint-disable-next-line no-alert
+            // @ts-ignore
             alert(err?.response?.data?.message ?? 'Something went wrong');
         }
     };
@@ -186,10 +190,12 @@ const DataTable: React.FC<Props> = ({ apiData, forceUpdate }): React.ReactElemen
             title: string;
             content: string;
             image?: string;
+            position: number;
         } = {
             id,
             title,
             content,
+            position,
         };
 
         if (imageUrl) {
@@ -213,6 +219,7 @@ const DataTable: React.FC<Props> = ({ apiData, forceUpdate }): React.ReactElemen
             clearAll();
 
             // eslint-disable-next-line no-alert
+            // @ts-ignore
             alert(err?.response?.data?.message ?? 'Something went wrong');
         }
     };
@@ -221,12 +228,14 @@ const DataTable: React.FC<Props> = ({ apiData, forceUpdate }): React.ReactElemen
         editedData: {
             title: string;
             content: string;
+            position: number;
         },
         idx: number
     ) => {
         setIsEditing(true);
         setEditingIdx(idx);
 
+        setPosition(editedData.position);
         setTitle(editedData.title);
         setContent(editedData.content);
     };
@@ -241,9 +250,11 @@ const DataTable: React.FC<Props> = ({ apiData, forceUpdate }): React.ReactElemen
             data.isVideo,
             data.videoLink,
             data.image,
-            data.viewCount
+            data.viewCount,
+            data.position
         )
     );
+    console.log(position);
 
     return (
         <>
@@ -255,6 +266,7 @@ const DataTable: React.FC<Props> = ({ apiData, forceUpdate }): React.ReactElemen
                 <Table className={classes.table} aria-label="customized table">
                     <TableHead>
                         <TableRow>
+                            <StyledTableCell>Position</StyledTableCell>
                             <StyledTableCell>Image</StyledTableCell>
                             <StyledTableCell>Title</StyledTableCell>
                             <StyledTableCell>Date</StyledTableCell>
@@ -269,6 +281,21 @@ const DataTable: React.FC<Props> = ({ apiData, forceUpdate }): React.ReactElemen
                     <TableBody>
                         {rows.map((row, idx) => (
                             <StyledTableRow key={row.id}>
+                                <StyledTableCell>
+                                    {isEditing && editingIdx === idx ? (
+                                        <FormControl className="">
+                                            <input
+                                                color="primary"
+                                                type="number"
+                                                onChange={(e) =>
+                                                    setPosition(Number(e.target.value))
+                                                }
+                                            />
+                                        </FormControl>
+                                    ) : (
+                                        row.position
+                                    )}
+                                </StyledTableCell>
                                 <StyledTableCell>
                                     {/* eslint-disable-next-line no-nested-ternary */}
                                     {isEditing && editingIdx === idx ? (
@@ -403,6 +430,7 @@ const DataTable: React.FC<Props> = ({ apiData, forceUpdate }): React.ReactElemen
                                                 editButtonHandler(
                                                     {
                                                         title: row.title,
+                                                        position: row.position,
                                                         content: row.content,
                                                     },
                                                     idx

@@ -19,6 +19,7 @@ const AddForm: React.FC<Props> = ({ forceUpdate }): React.ReactElement => {
     const [isLoading, setIsLoading] = useState(false);
     const [isSumbit, setIsSubmit] = useState(false);
 
+    const [position, setPosition] = useState(0);
     const [name, setName] = useState('');
     const [ytlink, setYtlink] = useState('');
 
@@ -52,7 +53,7 @@ const AddForm: React.FC<Props> = ({ forceUpdate }): React.ReactElement => {
         try {
             const response = await axios.post(
                 '/lightexercise',
-                { name, ytlink },
+                { name, ytlink, position },
                 {
                     headers: {
                         Authorization: token,
@@ -72,6 +73,7 @@ const AddForm: React.FC<Props> = ({ forceUpdate }): React.ReactElement => {
             clearAll();
 
             // eslint-disable-next-line no-alert
+            // @ts-ignore
             alert(err?.response?.data?.message ?? 'Something went wrong');
         }
     };
@@ -104,6 +106,19 @@ const AddForm: React.FC<Props> = ({ forceUpdate }): React.ReactElement => {
                             fullWidth
                             value={name}
                             onChange={(e) => setName(e.target.value)}
+                        />
+                        <TextField
+                            autoFocus
+                            error={isSumbit && !position}
+                            helperText={isSumbit && !position ? 'Please add a position' : ''}
+                            margin="dense"
+                            name="position"
+                            label="Position"
+                            fullWidth
+                            value={position}
+                            onChange={(e) =>
+                                setPosition(e.target.value ? Number(e.target.value) : 0)
+                            }
                         />
 
                         <TextField

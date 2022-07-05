@@ -62,7 +62,7 @@ const AddForm: React.FC<Props> = ({
 
     const [isLoading, setIsLoading] = useState(false);
     const [isSumbit, setIsSubmit] = useState(false);
-
+    const [position, setPosition] = useState(0);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [date, setDate] = useState({
@@ -142,7 +142,8 @@ const AddForm: React.FC<Props> = ({
             !time.startingTime ||
             !time.endingTime ||
             !designation ||
-            !image
+            !image ||
+            !position
         )
             return;
 
@@ -152,6 +153,7 @@ const AddForm: React.FC<Props> = ({
 
         const bodyFormData = new FormData();
         bodyFormData.append('name', name);
+        bodyFormData.append('position', position.toString());
         bodyFormData.append('description', description);
         bodyFormData.append('visitingDays', JSON.stringify(days));
         bodyFormData.append('timeFrom', time.startingTime);
@@ -184,6 +186,7 @@ const AddForm: React.FC<Props> = ({
             clearAll();
 
             // eslint-disable-next-line no-alert
+            // @ts-ignore
             alert(err?.response?.data?.message ?? 'Something went wrong');
         }
     };
@@ -217,6 +220,19 @@ const AddForm: React.FC<Props> = ({
                             fullWidth
                             value={name}
                             onChange={(e) => setName(e.target.value)}
+                        />
+                        <TextField
+                            autoFocus
+                            error={isSumbit && !position}
+                            helperText={isSumbit && !position ? 'Please provide position' : ''}
+                            margin="dense"
+                            name="position"
+                            label="position"
+                            fullWidth
+                            value={position}
+                            onChange={(e) =>
+                                setPosition(e.target.value ? Number(e.target.value) : 0)
+                            }
                         />
 
                         <FormControl fullWidth error={isSumbit && !designation}>

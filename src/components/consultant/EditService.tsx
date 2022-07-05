@@ -91,7 +91,7 @@ const EditService: React.FC<Props> = ({
     const [openModeSelect, setOpenModeSelect] = useState(false);
     const [openDurationSelect, setOpenDurationSelect] = useState(false);
 
-    const serviceDuration = ['30M', '1H', '2H', '3H', '4H'];
+    const serviceDuration = ['30M', '1H', '1H 15M', '1H 30M', '2H'];
 
     useEffect(() => {
         setNewServices(services);

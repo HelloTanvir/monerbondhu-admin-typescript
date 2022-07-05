@@ -132,6 +132,7 @@ const AddForm: React.FC<Props> = ({ consultants, forceUpdate }) => {
             setIsLoading(false);
             clearAll();
             // eslint-disable-next-line no-alert
+            // @ts-ignore
             alert(err?.response?.data?.message ?? 'Something went wrong');
         }
     };

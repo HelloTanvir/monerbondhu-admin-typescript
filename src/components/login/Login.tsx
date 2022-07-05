@@ -82,9 +82,11 @@ const Login: React.FC = (): React.ReactElement => {
 
             history.push('/dashboard');
         } catch (err) {
+            // @ts-ignore
             setErrorMsg(err?.response?.data?.message ?? 'Something went wrong');
             setIsSubmit(false);
             setIsLoading(false);
+            // @ts-ignore
             // alert(err?.response?.data?.message ?? 'Something went wrong');
         }
     };

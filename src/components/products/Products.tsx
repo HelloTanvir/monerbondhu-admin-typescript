@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import AppLayout from '../../container/appLayout/AppLayout';
 import axios from '../../utils/axios';
 import Loader from '../../utils/Loader';
@@ -10,6 +10,7 @@ export interface ProductsData {
     dis: string;
     price: string | number;
     image: string;
+    position: number;
 }
 
 const Products = () => {
@@ -38,6 +39,7 @@ const Products = () => {
             } catch (err) {
                 setIsLoading(false);
                 // eslint-disable-next-line no-alert
+                // @ts-ignore
                 alert(err?.response?.data?.message ?? 'Something went wrong');
             }
         };

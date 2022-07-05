@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import AppLayout from '../../container/appLayout/AppLayout';
 import axios from '../../utils/axios';
 import Loader from '../../utils/Loader';
 import DataTable from './DataTable';
 
 export interface ConsultantData {
+    position: number;
     review: number | string;
     reviewCount: number;
     _id: string;
@@ -36,6 +37,7 @@ const Consultant = () => {
     const [update, setUpdate] = useState(0);
 
     const forceUpdate = () => setUpdate((i) => i + 1);
+    // console.log(apiData);
 
     useEffect(() => {
         const apiResponse = async () => {
@@ -51,11 +53,13 @@ const Consultant = () => {
                 if (response) setIsLoading(false);
 
                 setApiData([...response.data.data].reverse());
+
                 setDesignations(response.data.designations);
                 setServices(response.data.services);
             } catch (err) {
                 setIsLoading(false);
                 // eslint-disable-next-line no-alert
+                // @ts-ignore
                 alert(err?.response?.data?.message ?? 'Something went wrong');
             }
         };

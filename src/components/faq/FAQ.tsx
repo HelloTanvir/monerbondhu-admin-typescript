@@ -36,6 +36,7 @@ const FAQ = () => {
             } catch (err) {
                 setIsLoading(false);
                 // eslint-disable-next-line no-alert
+                // @ts-ignore
                 alert(err?.response?.data?.message ?? 'Something went wrong');
             }
         };

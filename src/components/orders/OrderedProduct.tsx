@@ -27,6 +27,7 @@ interface Props {
         dis: string;
         price: number | string;
         image: string;
+        position: number;
     };
     isEditing?: boolean;
     allProducts?: ProductsData[];

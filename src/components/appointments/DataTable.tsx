@@ -44,6 +44,7 @@ const StyledTableRow = withStyles((theme) => ({
 const createData = (
     id: string,
     name: string,
+    position: number,
     userNumber: string,
     givenNumber: string,
     consultant: string,
@@ -57,6 +58,7 @@ const createData = (
 ) => ({
     id,
     name,
+    position,
     userNumber,
     givenNumber,
     consultant,
@@ -106,6 +108,7 @@ const DataTable: React.FC<Props> = ({ apiData, consultants, forceUpdate }): Reac
     const [isLoading, setIsLoading] = useState(false);
 
     const [state, setState] = useState('');
+    const [position, setPosition] = useState(0);
 
     const calcAge = (dateString: string): number => {
         const birthday = +new Date(dateString);
@@ -139,7 +142,7 @@ const DataTable: React.FC<Props> = ({ apiData, consultants, forceUpdate }): Reac
             try {
                 const response = await axios.patch(
                     '/consultent/appointment',
-                    { id, state },
+                    { id, state, position },
                     {
                         headers: { Authorization: token },
                     }
@@ -154,6 +157,7 @@ const DataTable: React.FC<Props> = ({ apiData, consultants, forceUpdate }): Reac
                 setIsLoading(false);
                 setState('');
                 // eslint-disable-next-line no-alert
+                // @ts-ignore
                 alert(err?.response?.data?.message ?? 'Something went wrong');
             }
         }
@@ -164,6 +168,7 @@ const DataTable: React.FC<Props> = ({ apiData, consultants, forceUpdate }): Reac
             // eslint-disable-next-line no-underscore-dangle
             data._id,
             data.name,
+            data.position,
             data.userPhoneNumber,
             data.givenMobileNumber,
             data.consultantName,
@@ -187,6 +192,7 @@ const DataTable: React.FC<Props> = ({ apiData, consultants, forceUpdate }): Reac
                 <Table className={classes.table} aria-label="customized table">
                     <TableHead>
                         <TableRow>
+                            <StyledTableCell>Position</StyledTableCell>
                             <StyledTableCell>Name</StyledTableCell>
                             <StyledTableCell align="left">User Number</StyledTableCell>
                             <StyledTableCell align="left">Consultant</StyledTableCell>
@@ -206,6 +212,23 @@ const DataTable: React.FC<Props> = ({ apiData, consultants, forceUpdate }): Reac
                     <TableBody>
                         {rows.map((row, idx) => (
                             <StyledTableRow key={row.id}>
+                                <StyledTableCell component="th" scope="row">
+                                    {isEditing && editingIdx === idx ? (
+                                        <FormControl className={classes.formControl}>
+                                            <input
+                                                color="primary"
+                                                type="number"
+                                                onChange={(e) =>
+                                                    setPosition(
+                                                        e.target.value ? Number(e.target.value) : 0
+                                                    )
+                                                }
+                                            />
+                                        </FormControl>
+                                    ) : (
+                                        row.position
+                                    )}
+                                </StyledTableCell>
                                 <StyledTableCell component="th" scope="row">
                                     {row.name}
                                 </StyledTableCell>

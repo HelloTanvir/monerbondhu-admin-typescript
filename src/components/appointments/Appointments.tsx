@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import AppLayout from '../../container/appLayout/AppLayout';
 import axios from '../../utils/axios';
 import Loader from '../../utils/Loader';
@@ -8,6 +8,7 @@ export interface AppointmentData {
     _id: string;
     userPhoneNumber: string;
     state: string;
+    position: number;
     name: string;
     givenMobileNumber: string;
     appointmentDate: string;
@@ -66,12 +67,13 @@ const Appointments = () => {
             } catch (err) {
                 setIsLoading(false);
                 // eslint-disable-next-line no-alert
+                // @ts-ignore
                 alert(err?.response?.data?.message ?? 'Something went wrong');
             }
         };
         apiResponse();
     }, [update]);
-
+    console.log(apiData);
     return (
         <AppLayout consultantOpen dawerOpen>
             <Loader open={isLoading} />

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import AppLayout from '../../container/appLayout/AppLayout';
 import axios from '../../utils/axios';
 import Loader from '../../utils/Loader';
@@ -9,6 +9,7 @@ export interface PinVideoData {
     name: string;
     ytlink: string;
     image: string;
+    position: number;
 }
 
 const PinVideo = () => {
@@ -37,6 +38,7 @@ const PinVideo = () => {
             } catch (err) {
                 setIsLoading(false);
                 // eslint-disable-next-line no-alert
+                // @ts-ignore
                 alert(err?.response?.data?.message ?? 'Something went wrong');
             }
         };
